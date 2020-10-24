@@ -1,20 +1,46 @@
 module.exports = function check(str, bracketsConfig) {
-  let arr = []
-    let brackets = []
+  let open = [];
+  let close = [];
+  let same = [];
+  let counterForSame = [];
+  for (let i = 0; i < bracketsConfig.length; i++) {
+      if (bracketsConfig[i][0] == bracketsConfig[i][1]) {
+          same.push(bracketsConfig[i][0]);
+          counterForSame.push(0);
+      }
+    else{
+        open.push(bracketsConfig[i][0]);
+        close.push(bracketsConfig[i][1]);
+    }
+  }
 
-    for(let k = 0; k === 0;) {
-        k = 1
-
-        for(let i = 0; i < bracketsConfig.length; i++) {
-        brackets[i] = bracketsConfig[i][0] + bracketsConfig[i][1]
-        arr = str.split(brackets[i])
-        if(arr.length > 1) {
-          k = 0
+  let buffer = [];
+  for (let char of str) {
+    if ((same.indexOf(char) !== -1)) {
+        if (counterForSame[same.indexOf(char)] == 0) {
+            counterForSame[same.indexOf(char)]++;
+            buffer.push(char);
+        } else
+        {
+            counterForSame[same.indexOf(char)]--;
+            if (buffer[buffer.length-1] == char)
+                buffer.pop()
+                else
+                return false;
         }
-        str = arr.join('')
-      }
-
-      }
-
-      return str === '' ? true : false
+    } else {
+        if (open.indexOf(char) !== -1) {
+            buffer.push(char);
+        }
+        if (close.indexOf(char) !== -1) {
+            if (close.indexOf(char) == open.indexOf(buffer[buffer.length-1]))
+                buffer.pop()
+                else
+            return false;
+        }
+    }
+  }
+  if (buffer.length == 0 ) return true
+  else
+  return false;
 }
